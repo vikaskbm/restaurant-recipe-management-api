@@ -66,45 +66,45 @@ class PublicUserAPITests(TestCase):
         self.assertFalse(user_exists)
 
     def test_create_token_for_user(self):
-    	"""Test that a token is created for a new user"""
-    	payload = {
-    		'email': 'test@vikaskbm@gmail.com',
-    		'password': 'test1234'
-    	}
+        """Test that a token is created for a new user"""
+        payload = {
+            'email': 'test@vikaskbm@gmail.com',
+            'password': 'test1234'
+        }
 
-    	create_user(**payload)
-    	res = self.client.post(TOKEN_URL, payload)
-    	self.assertIn('token', res.data)
-    	self.assertEqual(res.status_code, status.HTTP_200_OK)
+        create_user(**payload)
+        res = self.client.post(TOKEN_URL, payload)
+        self.assertIn('token', res.data)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_create_token_invalid_credentials(self):
-    	"""Test that token not created when invalid credentials given"""
-    	create_user(email='test@vikas.com', password='test1234')
-    	payload = {
-    		'email': 'test@vikas.com',
-    		'password': 'test'
-    	}
+        """Test that token not created when invalid credentials given"""
+        create_user(email='test@vikas.com', password='test1234')
+        payload = {
+            'email': 'test@vikas.com',
+            'password': 'test'
+        }
 
-    	res = self.client.post(TOKEN_URL, payload)
-    	self.assertNotIn('token', res.data)
-    	self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        res = self.client.post(TOKEN_URL, payload)
+        self.assertNotIn('token', res.data)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_token_no_user(self):
-    	""""Test that token not created is user doesn't exist"""
-    	payload = {
-    		'email': 'test@vikas.com',
-    		'password': 'test1234'
-    	}
+        """"Test that token not created is user doesn't exist"""
+        payload = {
+            'email': 'test@vikas.com',
+            'password': 'test1234'
+        }
 
-    	res = self.client.post(TOKEN_URL, payload)
-    	self.assertNotIn('token', res.data)
-    	self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        res = self.client.post(TOKEN_URL, payload)
+        self.assertNotIn('token', res.data)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_token_missing_field(self):
-    	"""Test that email and password are required"""
-    	res = self.client.post(TOKEN_URL, {'email': 'one', 'password': ''})
-    	self.assertNotIn('token', res.data)
-    	self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        """Test that email and password are required"""
+        res = self.client.post(TOKEN_URL, {'email': 'one', 'password': ''})
+        self.assertNotIn('token', res.data)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_retrieve_user_unauthorised(self):
         """Test that authentication is required for user"""
@@ -117,7 +117,7 @@ class PrivateUserAPITests(TestCase):
 
     def setUp(self):
         self.user = create_user(
-            email='test@vikas.com', 
+            email='test@vikas.com',
             password='test1234',
             name='Test User'
         )
@@ -131,8 +131,8 @@ class PrivateUserAPITests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, {
-                'name':self.user.name,
-                'email':self.user.email
+                'name': self.user.name,
+                'email': self.user.email
             })
 
     def test_post_me_mot_allowed(self):
@@ -144,8 +144,8 @@ class PrivateUserAPITests(TestCase):
     def test_update_user_profile(self):
         """Test updating user profile for the authenticated user"""
         payload = {
-            'name':'new_name',
-            'password':'new_pass'
+            'name': 'new_name',
+            'password': 'new_pass'
         }
         res = self.client.patch(ME_URL, payload)
         self.user.refresh_from_db()
